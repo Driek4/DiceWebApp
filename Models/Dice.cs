@@ -13,6 +13,7 @@
     {
         public DiceType Type { get; set; } = DiceType.Standard;
         public int Value { get; set; }
+        public string Location { get; set; } = "pool";
 
         private static readonly Random random = new Random();
         public void Roll()

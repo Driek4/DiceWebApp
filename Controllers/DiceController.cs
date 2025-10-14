@@ -45,6 +45,20 @@ namespace DiceWebApp.Controllers
         }
 
         [HttpPost]
+        public IActionResult Move(int index, string zone)
+        {
+            var diceManager = GetDiceManager();
+
+            if (index >= 0 && index < diceManager.DiceList.Count)
+            {
+                diceManager.DiceList[index].Location = zone;
+                SaveDiceManager(diceManager);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
         public IActionResult Reset()
         {
             var diceManager = GetDiceManager();

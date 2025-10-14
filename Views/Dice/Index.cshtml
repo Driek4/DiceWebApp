@@ -3,126 +3,230 @@
     ViewData["Title"] = "Dice Roller";
 }
 
+<!-- 🎨 STYLES -->
 <style>
-    /* General button styling for everything */
     button {
         font-weight: bold;
         border: 4px solid black !important;
     }
 
-    /* 🎨 Add Dice + Roll buttons */
     .add-dice-btn, .control-btn {
         font-weight: bold;
         border: 4px solid black !important;
-        border-radius: 50px; /* 👈 rounded, pill-like edges */
-        padding: 18px 36px; /* 👈 makes buttons bigger */
-        font-size: 1.1em; /* text readable but not huge */
+        border-radius: 50px;
+        padding: 18px 36px;
+        font-size: 1.1em;
         margin: 6px;
         cursor: pointer;
         transition: 0.1s;
     }
 
-        /* Hover and press effect */
-        .add-dice-btn:hover, .control-btn:hover {
-            transform: scale(1.05);
-        }
+    .add-dice-btn:hover, .control-btn:hover {
+        transform: scale(1.05);
+    }
 
-        .add-dice-btn:active, .control-btn:active {
-            transform: scale(0.95);
-        }
+    .add-dice-btn:active, .control-btn:active {
+        transform: scale(0.95);
+    }
+
+    .drop-area {
+        border: 4px dashed black;
+        border-radius: 20px;
+        min-height: 150px;
+        padding: 10px;
+        margin: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        justify-items: center;
+        align-content: start;
+        background-color: #f8f8f8;
+        transition: 0.2s;
+    }
+
+    #weapon, #ability1, #ability2 {
+        grid-template-columns: repeat(3, 100px);
+        grid-auto-rows: 100px;
+        justify-content: center;
+        align-content: start;
+    }
+
+    #pool {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .drop-area.dragover {
+        background-color: #e0e0ff;
+        transform: scale(1.02);
+    }
+
+    .drop-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: center;
+        width: 100%;
+        grid-column: 1 / -1;
+    }
+
+    .dice {
+        width: 100px;
+        height: 100px;
+        font-size: 2em;
+        font-weight: bold;
+        border: 4px solid black;
+        border-radius: 10px;
+        cursor: grab;
+        user-select: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .dice:active {
+        cursor: grabbing;
+    }
 </style>
 
 <h1>🎲 Dice Roller</h1>
 
-<!-- Roll Button -->
-<button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
+<!-- Roll and Reset buttons -->
+<div style="margin-bottom:15px;">
+    <button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
 
-<!-- Reset Button -->
-<form asp-action="Reset" method="post" style="display:inline;">
-    <button type="submit" class="control-btn" style="background-color:#ffcccc;color:black;">
-        Reset
-    </button>
-</form>
-
-<!-- Add Dice Buttons -->
-<div style="margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
-    <form asp-action="Add" method="post">
-        <input type="hidden" name="type" value="Standard" />
-        <button type="submit" class="add-dice-btn"
-                style="background-color:purple;color:black;">
-            Add Standard
-        </button>
-    </form>
-
-    <form asp-action="Add" method="post">
-        <input type="hidden" name="type" value="Bleed" />
-        <button type="submit" class="add-dice-btn"
-                style="background-color:red;color:black;">
-            Add Bleed
-        </button>
-    </form>
-
-    <form asp-action="Add" method="post">
-        <input type="hidden" name="type" value="Poison" />
-        <button type="submit" class="add-dice-btn"
-                style="background-color:green;color:black;">
-            Add Poison
-        </button>
-    </form>
-
-    <form asp-action="Add" method="post">
-        <input type="hidden" name="type" value="Smite" />
-        <button type="submit" class="add-dice-btn"
-                style="background-color:white;color:gold;">
-            Add Smite
-        </button>
-    </form>
-
-    <form asp-action="Add" method="post">
-        <input type="hidden" name="type" value="Curse" />
-        <button type="submit" class="add-dice-btn"
-                style="background-color:black;color:purple;">
-            Add Curse
+    <form asp-action="Reset" method="post" style="display:inline;">
+        <button type="submit" class="control-btn" style="background-color:#ffcccc;color:black;">
+            Reset
         </button>
     </form>
 </div>
 
-<!-- Dice Display -->
-<div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;">
-    @for (int i = 0; i < Model.DiceList.Count; i++)
+<!-- Add Dice Buttons -->
+<div style="margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
+    @foreach (var type in new[] { "Standard", "Bleed", "Poison", "Burn", "Smite", "Curse" })
     {
-        string background = Model.DiceList[i].Type switch
+        string bg = type switch
         {
-            DiceWebApp.Models.DiceType.Standard => "purple",
-            DiceWebApp.Models.DiceType.Bleed => "red",
-            DiceWebApp.Models.DiceType.Poison => "green",
-            DiceWebApp.Models.DiceType.Smite => "white",
-            DiceWebApp.Models.DiceType.Curse => "black",
+            "Standard" => "purple",
+            "Bleed" => "red",
+            "Poison" => "green",
+            "Burn" => "orange",
+            "Smite" => "white",
+            "Curse" => "black",
             _ => "gray"
         };
 
-        string color = Model.DiceList[i].Type switch
+        string textColor = type switch
         {
-            DiceWebApp.Models.DiceType.Smite => "gold",
-            DiceWebApp.Models.DiceType.Curse => "purple",
+            "Smite" => "gold",
+            "Curse" => "purple",
             _ => "black"
         };
 
-        <form asp-action="Remove" method="post" style="display:inline;">
-            <input type="hidden" name="index" value="@i" />
-            <button type="submit"
-                    class="dice"
-                    style="width:100px;height:100px;font-size:2em;
-                               border:4px solid black;
-                               border-radius:10px;
-                               background-color:@background;color:@color;
-                               cursor:pointer;">
-                @Model.DiceList[i].Value
+        <form asp-action="Add" method="post">
+            <input type="hidden" name="type" value="@type" />
+            <button type="submit" class="add-dice-btn" style="background-color:@bg;color:@textColor;">
+                Add @type
             </button>
         </form>
     }
 </div>
 
+<!-- 🎲 Dice Pool -->
+<div id="pool" class="drop-area">
+    <div class="drop-label">Dice Pool</div>
+
+    @for (int i = 0; i < Model.DiceList.Count; i++)
+    {
+        var dice = Model.DiceList[i];
+        if (dice.Location == "pool")
+        {
+            string background = dice.Type switch
+            {
+                DiceWebApp.Models.DiceType.Standard => "purple",
+                DiceWebApp.Models.DiceType.Bleed => "red",
+                DiceWebApp.Models.DiceType.Poison => "green",
+                DiceWebApp.Models.DiceType.Burn => "orange",
+                DiceWebApp.Models.DiceType.Smite => "white",
+                DiceWebApp.Models.DiceType.Curse => "black",
+                _ => "gray"
+            };
+
+            string color = dice.Type switch
+            {
+                DiceWebApp.Models.DiceType.Smite => "gold",
+                DiceWebApp.Models.DiceType.Curse => "purple",
+                _ => "black"
+            };
+
+            <div id="dice-@i"
+                 class="dice"
+                 draggable="true"
+                 onclick="removeDice(@i)"
+                 style="@( $"background-color:{background};color:{color};" )">
+                @dice.Value
+            </div>
+        }
+    }
+</div>
+
+<!-- ⚔️ Drop Zones -->
+<div style="display:flex;flex-wrap:wrap;gap:20px;margin-top:30px;justify-content:center;">
+    @foreach (var zone in new[] { "weapon", "ability1", "ability2" })
+    {
+        <div class="drop-area" id="@zone">
+            <div class="drop-label">
+                @(zone switch
+                {
+                    "weapon" => "Weapon",
+                    "ability1" => "Ability 1",
+                    "ability2" => "Ability 2",
+                    _ => zone
+                })
+        </div>
+
+        @for (int i = 0; i < Model.DiceList.Count; i++)
+            {
+                var dice = Model.DiceList[i];
+                if (dice.Location == zone)
+                {
+                    string background = dice.Type switch
+                    {
+                        DiceWebApp.Models.DiceType.Standard => "purple",
+                        DiceWebApp.Models.DiceType.Bleed => "red",
+                        DiceWebApp.Models.DiceType.Poison => "green",
+                        DiceWebApp.Models.DiceType.Burn => "orange",
+                        DiceWebApp.Models.DiceType.Smite => "white",
+                        DiceWebApp.Models.DiceType.Curse => "black",
+                        _ => "gray"
+                    };
+
+                    string color = dice.Type switch
+                    {
+                        DiceWebApp.Models.DiceType.Smite => "gold",
+                        DiceWebApp.Models.DiceType.Curse => "purple",
+                        _ => "black"
+                    };
+
+                    <div id="dice-@i"
+                         class="dice"
+                         draggable="true"
+                         onclick="removeDice(@i)"
+                         style="@( $"background-color:{background};color:{color};" )">
+                        @dice.Value
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+<!-- ⚙️ SCRIPT -->
 <script>
     async function rollDice() {
         const response = await fetch('/Dice/RollJson', { method: 'POST' });
@@ -132,4 +236,79 @@
             if (diceButtons[i]) diceButtons[i].innerText = d.value;
         });
     }
+
+    // --- AJAX Remove Dice ---
+    async function removeDice(index) {
+        const response = await fetch('/Dice/Remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `index=${index}`
+        });
+        if (response.ok) {
+            const diceElem = document.getElementById(`dice-${index}`);
+            if (diceElem) diceElem.remove();
+        }
+    }
+
+    // --- Drag and Drop Logic ---
+    function allowDrop(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('dragover');
+    }
+
+    function dragHandler(e) {
+        e.dataTransfer.setData("text/plain", e.target.id);
+        e.target.style.opacity = "0.5";
+    }
+
+    function dropHandler(e) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('dragover');
+
+        const diceId = e.dataTransfer.getData("text/plain");
+        const dice = document.getElementById(diceId);
+        if (!dice) return;
+
+        const zoneId = e.currentTarget.id;
+        const diceCount = e.currentTarget.querySelectorAll(".dice").length;
+
+        // Only enforce 9-dice limit on weapon and abilities
+        if ((zoneId === "weapon" || zoneId === "ability1" || zoneId === "ability2") && diceCount >= 9) {
+            dice.style.opacity = "1";
+            return;
+        }
+
+        e.currentTarget.appendChild(dice);
+        dice.style.opacity = "1";
+
+        const diceIndex = parseInt(diceId.replace('dice-', ''));
+        fetch('/Dice/Move', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `index=${diceIndex}&zone=${zoneId}`
+        });
+    }
+
+    function dragEnd(e) {
+        e.target.style.opacity = "1";
+    }
+
+    function bindDragEvents() {
+        document.querySelectorAll('.dice').forEach(dice => {
+            dice.addEventListener('dragstart', dragHandler);
+            dice.addEventListener('dragend', dragEnd);
+        });
+    }
+
+    function bindDropZones() {
+        document.querySelectorAll('.drop-area').forEach(area => {
+            area.addEventListener('dragover', allowDrop);
+            area.addEventListener('drop', dropHandler);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        bindDragEvents();
+        bindDropZones();
+    });
 </script>
