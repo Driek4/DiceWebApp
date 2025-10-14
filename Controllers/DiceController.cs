@@ -1,35 +1,61 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DiceWebApp.Models;
+using System.Text.Json;
 
 namespace DiceWebApp.Controllers
 {
     public class DiceController : Controller
     {
-        private static DiceManager diceManager = new DiceManager();
+        private DiceManager GetDiceManager()
+        {
+            var data = HttpContext.Session.GetString("DiceManager");
+
+            if (string.IsNullOrEmpty(data))
+                return new DiceManager(); // first-time user or no data yet
+
+            var manager = JsonSerializer.Deserialize<DiceManager>(data);
+
+            return manager ?? new DiceManager(); // fallback if deserialization fails
+        }
+
+        private void SaveDiceManager(DiceManager manager)
+        {
+            HttpContext.Session.SetString("DiceManager", JsonSerializer.Serialize(manager));
+        }
 
         public IActionResult index()
         {
+            var diceManager = GetDiceManager();
             return View(diceManager);
         }
 
         [HttpPost]
         public IActionResult add()
         {
+            var diceManager = GetDiceManager();
             diceManager.AddDice();
+            SaveDiceManager(diceManager);
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public IActionResult Roll()
         {
+            var diceManager = GetDiceManager();
             diceManager.RollAll();
+            SaveDiceManager(diceManager);
+
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public IActionResult Remove(int index)
         {
+            var diceManager = GetDiceManager();
             diceManager.RemoveDice(index);
+            SaveDiceManager(diceManager);
+
             return RedirectToAction("Index");
         }
     }

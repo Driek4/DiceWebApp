@@ -95,3 +95,4 @@ C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\refint\DiceWebApp
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.pdb
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.genruntimeconfig.cache
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\ref\DiceWebApp.dll
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.sourcelink.json
