@@ -45,6 +45,16 @@ namespace DiceWebApp.Controllers
         }
 
         [HttpPost]
+        public IActionResult Reset()
+        {
+            var diceManager = GetDiceManager();
+            diceManager.DiceList.Clear();
+            SaveDiceManager(diceManager);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
         public IActionResult RollJson()
         {
             var diceManager = GetDiceManager();

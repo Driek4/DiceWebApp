@@ -37,6 +37,13 @@
 <!-- Roll Button -->
 <button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
 
+<!-- Reset Button -->
+<form asp-action="Reset" method="post" style="display:inline;">
+    <button type="submit" class="control-btn" style="background-color:#ffcccc;color:black;">
+        Reset
+    </button>
+</form>
+
 <!-- Add Dice Buttons -->
 <div style="margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
     <form asp-action="Add" method="post">
