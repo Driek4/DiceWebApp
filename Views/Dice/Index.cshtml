@@ -3,7 +3,7 @@
     ViewData["Title"] = "Dice Roller";
 }
 
-<!-- 🎨 STYLES -->
+<!-- STYLES -->
 <style>
     button {
         font-weight: bold;
@@ -93,8 +93,6 @@
     }
 </style>
 
-<h1>🎲 Dice Roller</h1>
-
 <!-- Roll and Reset buttons -->
 <div style="margin-bottom:15px;">
     <button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
@@ -137,7 +135,7 @@
     }
 </div>
 
-<!-- 🎲 Dice Pool -->
+<!-- Dice Pool -->
 <div id="pool" class="drop-area">
     <div class="drop-label">Dice Pool</div>
 
@@ -175,7 +173,7 @@
     }
 </div>
 
-<!-- ⚔️ Drop Zones -->
+<!-- Drop Zones -->
 <div style="display:flex;flex-wrap:wrap;gap:20px;margin-top:30px;justify-content:center;">
     @foreach (var zone in new[] { "weapon", "ability1", "ability2" })
     {
@@ -226,7 +224,7 @@
     }
 </div>
 
-<!-- ⚙️ SCRIPT -->
+<!-- SCRIPT -->
 <script>
     async function rollDice() {
         const response = await fetch('/Dice/RollJson', { method: 'POST' });
@@ -271,8 +269,6 @@
 
         const zoneId = e.currentTarget.id;
         const diceCount = e.currentTarget.querySelectorAll(".dice").length;
-
-        // Only enforce 9-dice limit on weapon and abilities
         if ((zoneId === "weapon" || zoneId === "ability1" || zoneId === "ability2") && diceCount >= 9) {
             dice.style.opacity = "1";
             return;

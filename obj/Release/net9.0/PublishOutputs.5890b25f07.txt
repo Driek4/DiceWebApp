@@ -1,0 +1,7 @@
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\DiceWebApp.exe
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\appsettings.Development.json
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\appsettings.json
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\DiceWebApp.dll
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\DiceWebApp.deps.json
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\DiceWebApp.runtimeconfig.json
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Release\net9.0\PubTmp\Out\DiceWebApp.pdb

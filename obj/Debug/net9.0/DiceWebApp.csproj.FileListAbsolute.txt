@@ -89,10 +89,10 @@ C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.b
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.build.endpoints.json
-C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.dll
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\refint\DiceWebApp.dll
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.pdb
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.genruntimeconfig.cache
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\ref\DiceWebApp.dll
 C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\DiceWebApp.sourcelink.json
+C:\Users\Driek\Projects\DiceWebApp\DiceWebApp\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
