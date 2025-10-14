@@ -30,10 +30,15 @@ namespace DiceWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult add()
+        public IActionResult add(string type)
         {
             var diceManager = GetDiceManager();
-            diceManager.AddDice();
+
+            if (Enum.TryParse<DiceType>(type, out var diceType))
+                diceManager.AddDice(diceType);
+            else
+                diceManager.AddDice(); //fallback
+
             SaveDiceManager(diceManager);
 
             return RedirectToAction("Index");

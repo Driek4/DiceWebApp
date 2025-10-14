@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DiceWebApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+63538cb989f57ff8ff693d276422a7202f989238")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91eedc91ddf4cdec5564e46bfdfc63c5cfdad782")]
 [assembly: System.Reflection.AssemblyProductAttribute("DiceWebApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DiceWebApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

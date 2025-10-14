@@ -3,42 +3,126 @@
     ViewData["Title"] = "Dice Roller";
 }
 
+<style>
+    /* General button styling for everything */
+    button {
+        font-weight: bold;
+        border: 4px solid black !important;
+    }
+
+    /* 🎨 Add Dice + Roll buttons */
+    .add-dice-btn, .control-btn {
+        font-weight: bold;
+        border: 4px solid black !important;
+        border-radius: 50px; /* 👈 rounded, pill-like edges */
+        padding: 18px 36px; /* 👈 makes buttons bigger */
+        font-size: 1.1em; /* text readable but not huge */
+        margin: 6px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+
+        /* Hover and press effect */
+        .add-dice-btn:hover, .control-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .add-dice-btn:active, .control-btn:active {
+            transform: scale(0.95);
+        }
+</style>
+
 <h1>🎲 Dice Roller</h1>
 
-<form asp-action="Roll" method="post">
-    <button type="button" class="btn btn-primary" onclick="rollDice()">Roll All</button>
-</form>
+<!-- Roll Button -->
+<button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
 
-<form asp-action="Add" method="post">
-    <button type="submit" class="btn btn-success">Add Dice</button>
-</form>
+<!-- Add Dice Buttons -->
+<div style="margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
+    <form asp-action="Add" method="post">
+        <input type="hidden" name="type" value="Standard" />
+        <button type="submit" class="add-dice-btn"
+                style="background-color:purple;color:black;">
+            Add Standard
+        </button>
+    </form>
 
+    <form asp-action="Add" method="post">
+        <input type="hidden" name="type" value="Bleed" />
+        <button type="submit" class="add-dice-btn"
+                style="background-color:red;color:black;">
+            Add Bleed
+        </button>
+    </form>
+
+    <form asp-action="Add" method="post">
+        <input type="hidden" name="type" value="Poison" />
+        <button type="submit" class="add-dice-btn"
+                style="background-color:green;color:black;">
+            Add Poison
+        </button>
+    </form>
+
+    <form asp-action="Add" method="post">
+        <input type="hidden" name="type" value="Smite" />
+        <button type="submit" class="add-dice-btn"
+                style="background-color:white;color:gold;">
+            Add Smite
+        </button>
+    </form>
+
+    <form asp-action="Add" method="post">
+        <input type="hidden" name="type" value="Curse" />
+        <button type="submit" class="add-dice-btn"
+                style="background-color:black;color:purple;">
+            Add Curse
+        </button>
+    </form>
+</div>
+
+<!-- Dice Display -->
 <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:10px;">
     @for (int i = 0; i < Model.DiceList.Count; i++)
     {
+        string background = Model.DiceList[i].Type switch
+        {
+            DiceWebApp.Models.DiceType.Standard => "purple",
+            DiceWebApp.Models.DiceType.Bleed => "red",
+            DiceWebApp.Models.DiceType.Poison => "green",
+            DiceWebApp.Models.DiceType.Smite => "white",
+            DiceWebApp.Models.DiceType.Curse => "black",
+            _ => "gray"
+        };
+
+        string color = Model.DiceList[i].Type switch
+        {
+            DiceWebApp.Models.DiceType.Smite => "gold",
+            DiceWebApp.Models.DiceType.Curse => "purple",
+            _ => "black"
+        };
+
         <form asp-action="Remove" method="post" style="display:inline;">
             <input type="hidden" name="index" value="@i" />
             <button type="submit"
                     class="dice"
                     style="width:100px;height:100px;font-size:2em;
-                   border:1px solid #000;background:#fff;
-                   cursor:pointer;">
+                               border:4px solid black;
+                               border-radius:10px;
+                               background-color:@background;color:@color;
+                               cursor:pointer;">
                 @Model.DiceList[i].Value
             </button>
         </form>
     }
 </div>
 
-
 <script>
     async function rollDice() {
         const response = await fetch('/Dice/RollJson', { method: 'POST' });
-        const dice = await response.json(); // parse JSON list from server
-
-        // update dice buttons on page
+        const dice = await response.json();
         const diceButtons = document.querySelectorAll('.dice');
         dice.forEach((d, i) => {
-            diceButtons[i].innerText = d.value;
+            if (diceButtons[i]) diceButtons[i].innerText = d.value;
         });
     }
 </script>
