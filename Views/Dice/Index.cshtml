@@ -6,7 +6,7 @@
 <h1>🎲 Dice Roller</h1>
 
 <form asp-action="Roll" method="post">
-    <button type="submit" class="btn btn-primary">Roll All</button>
+    <button type="button" class="btn btn-primary" onclick="rollDice()">Roll All</button>
 </form>
 
 <form asp-action="Add" method="post">
@@ -19,11 +19,26 @@
         <form asp-action="Remove" method="post" style="display:inline;">
             <input type="hidden" name="index" value="@i" />
             <button type="submit"
+                    class="dice"
                     style="width:100px;height:100px;font-size:2em;
-                               border:1px solid #000;background:#fff;
-                               cursor:pointer;">
+                   border:1px solid #000;background:#fff;
+                   cursor:pointer;">
                 @Model.DiceList[i].Value
             </button>
         </form>
     }
 </div>
+
+
+<script>
+    async function rollDice() {
+        const response = await fetch('/Dice/RollJson', { method: 'POST' });
+        const dice = await response.json(); // parse JSON list from server
+
+        // update dice buttons on page
+        const diceButtons = document.querySelectorAll('.dice');
+        dice.forEach((d, i) => {
+            diceButtons[i].innerText = d.value;
+        });
+    }
+</script>
