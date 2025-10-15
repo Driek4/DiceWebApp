@@ -11,11 +11,10 @@ namespace DiceWebApp.Controllers
             var data = HttpContext.Session.GetString("DiceManager");
 
             if (string.IsNullOrEmpty(data))
-                return new DiceManager(); // first-time user or no data yet
+                return new DiceManager();
 
             var manager = JsonSerializer.Deserialize<DiceManager>(data);
-
-            return manager ?? new DiceManager(); // fallback if deserialization fails
+            return manager ?? new DiceManager();
         }
 
         private void SaveDiceManager(DiceManager manager)
@@ -23,25 +22,28 @@ namespace DiceWebApp.Controllers
             HttpContext.Session.SetString("DiceManager", JsonSerializer.Serialize(manager));
         }
 
-        public IActionResult index()
+        public IActionResult Index()
         {
             var diceManager = GetDiceManager();
             return View(diceManager);
         }
 
         [HttpPost]
-        public IActionResult add(string type)
+        public IActionResult Add(string type)
         {
             var diceManager = GetDiceManager();
 
-            if (Enum.TryParse<DiceType>(type, out var diceType))
-                diceManager.AddDice(diceType);
-            else
-                diceManager.AddDice(); //fallback
-
+            var diceType = Enum.Parse<DiceType>(type, true);
+            var newDie = diceManager.Add(diceType);
             SaveDiceManager(diceManager);
 
-            return RedirectToAction("Index");
+            return Json(new
+            {
+                index = diceManager.DiceList.Count - 1,
+                value = newDie.Value,
+                type = newDie.Type.ToString(),
+                location = newDie.Location
+            });
         }
 
         [HttpPost]
@@ -68,7 +70,7 @@ namespace DiceWebApp.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
+          [HttpPost]
         public IActionResult RollJson()
         {
             var diceManager = GetDiceManager();
@@ -85,7 +87,7 @@ namespace DiceWebApp.Controllers
             diceManager.RemoveDice(index);
             SaveDiceManager(diceManager);
 
-            return RedirectToAction("Index");
+            return Ok();
         }
     }
 }

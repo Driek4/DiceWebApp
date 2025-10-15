@@ -2,15 +2,24 @@
 {
     public class DiceManager
     {
-        public List<Dice> DiceList { get; set; } = new List<Dice>();
+        public List<Dice> DiceList { get; set; } = new();
 
-        public void AddDice(DiceType type = DiceType.Standard)
-            => DiceList.Add(new Dice { Type = type, Value = 0 });
+        private static readonly Random random = new();
+
+        public Dice Add(DiceType type)
+        {
+            var die = new Dice { Type = type, Location = "pool" };
+            die.Roll();
+            DiceList.Add(die);
+            return die;
+        }
+
         public void RemoveDice(int index)
         {
             if (index >= 0 && index < DiceList.Count)
                 DiceList.RemoveAt(index);
         }
+
         public void RollAll()
         {
             foreach (var dice in DiceList)
