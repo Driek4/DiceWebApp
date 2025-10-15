@@ -118,33 +118,50 @@
     }
 
     /* Mobile */
-    @@media (max-width: 768px) {
-        body {
-            zoom: 0.8;
-        }
-
-        .add-dice-btn, .control-btn {
-            padding: 12px 20px;
-            font-size: 1em;
-        }
-
-        .dice {
-            width: 70px;
-            height: 70px;
-            font-size: 1.4em;
-        }
-
-        .drop-area {
-            min-height: 100px;
-            border-width: 3px;
-            gap: 6px;
-        }
-
-        .drop-total {
-            font-size: 1.3em;
-            right: 10px;
-        }
+@@media (max-width: 768px) {
+    body {
+        zoom: 0.8;
     }
+
+    .add-dice-btn, .control-btn {
+        padding: 8px 16px;
+        font-size: 0.9em;
+        border-width: 3px;
+        margin: 4px;
+    }
+
+    .dice {
+        width: 65px;
+        height: 65px;
+        font-size: 1.3em;
+        border-width: 3px;
+    }
+
+    .drop-area {
+        min-height: 90px;
+        border-width: 3px;
+        gap: 4px; /* smaller space between dice */
+        padding: 6px;
+        margin: 6px;
+    }
+
+    #weapon, #ability1, #ability2 {
+        grid-template-columns: repeat(3, 65px);
+        grid-auto-rows: 65px;
+    }
+
+    .drop-total {
+        font-size: 1.2em;
+        right: 8px;
+        top: 4px;
+    }
+
+    .overall-total-box {
+        font-size: 1.3em;
+        padding: 8px 14px;
+        border-width: 3px;
+    }
+}
 </style>
 
 <!-- Roll / Reset -->
