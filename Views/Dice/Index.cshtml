@@ -15,7 +15,7 @@
         font-weight: bold;
         border: 4px solid black !important;
         border-radius: 50px;
-        padding: 18px 36px;
+        padding: 10px 24px;
         font-size: 1.1em;
         margin: 6px;
         cursor: pointer;
@@ -99,7 +99,6 @@
         box-sizing: border-box;
         touch-action: none;
         -webkit-user-drag: none;
-        -webkit-user-select: none;
     }
 
         .dice:active {
@@ -118,6 +117,7 @@
         display: inline-block;
     }
 
+    /* Mobile */
     @@media (max-width: 768px) {
         body {
             zoom: 0.8;
@@ -147,9 +147,9 @@
     }
 </style>
 
+<!-- Roll / Reset -->
 <div style="margin-bottom:15px;">
     <button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
-
     <form asp-action="Reset" method="post" style="display:inline;">
         <button type="submit" class="control-btn" style="background-color:#ffcccc;color:black;">
             Reset
@@ -157,6 +157,7 @@
     </form>
 </div>
 
+<!-- Dice Buttons -->
 <div style="margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
     @{
         var diceTypes = new[] { "Standard", "Bleed", "Poison", "Burn", "Smite", "Curse" };
@@ -172,29 +173,27 @@
                 "Curse" => "black",
                 _ => "gray"
             };
-
             string textColor = type switch
             {
                 "Smite" => "gold",
                 "Curse" => "purple",
                 _ => "black"
             };
-
             <button type="button"
                     class="add-dice-btn"
                     style="background-color:@bg;color:@textColor;"
                     onclick="addDice('@type')">
-                Add @type
+                @type
             </button>
             ;
         }
     }
 </div>
 
+<!-- Dice Pool -->
 <div id="pool" class="drop-area">
     <div class="drop-label">Dice Pool</div>
     <div class="drop-total" id="pool-total">0</div>
-
     @for (int i = 0; i < Model.DiceList.Count; i++)
     {
         var dice = Model.DiceList[i];
@@ -210,14 +209,12 @@
                 DiceWebApp.Models.DiceType.Curse => "black",
                 _ => "gray"
             };
-
             string color = dice.Type switch
             {
                 DiceWebApp.Models.DiceType.Smite => "gold",
                 DiceWebApp.Models.DiceType.Curse => "purple",
                 _ => "black"
             };
-
             <div id="dice-@i"
                  class="dice"
                  draggable="true"
@@ -229,6 +226,7 @@
     }
 </div>
 
+<!-- Drop Zones -->
 <div style="display:flex;flex-wrap:wrap;gap:20px;margin-top:30px;justify-content:center;">
     @foreach (var zone in new[] { "weapon", "ability1", "ability2" })
     {
@@ -243,7 +241,6 @@
                 })
         </div>
         <div class="drop-total" id="@zone-total">0</div>
-
         @for (int i = 0; i < Model.DiceList.Count; i++)
             {
                 var dice = Model.DiceList[i];
@@ -259,14 +256,12 @@
                         DiceWebApp.Models.DiceType.Curse => "black",
                         _ => "gray"
                     };
-
                     string color = dice.Type switch
                     {
                         DiceWebApp.Models.DiceType.Smite => "gold",
                         DiceWebApp.Models.DiceType.Curse => "purple",
                         _ => "black"
                     };
-
                     <div id="dice-@i"
                          class="dice"
                          draggable="true"
@@ -280,6 +275,7 @@
     }
 </div>
 
+<!-- Total -->
 <div style="text-align:center;">
     <div class="overall-total-box">
         Total: <span id="overall-total">0</span>
@@ -293,10 +289,8 @@
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `type=${type}`
         });
-
         if (response.ok) {
             const newDie = await response.json();
-
             const dicePool = document.getElementById('pool');
             const diceDiv = document.createElement('div');
             diceDiv.id = `dice-${newDie.index}`;
@@ -305,21 +299,21 @@
             diceDiv.onclick = () => removeDice(newDie.index);
             diceDiv.innerText = newDie.value;
 
-            let background, color;
-            switch (newDie.type) {
-                case "Standard": background = "purple"; color = "black"; break;
-                case "Bleed": background = "red"; color = "black"; break;
-                case "Poison": background = "green"; color = "black"; break;
-                case "Burn": background = "orange"; color = "black"; break;
-                case "Smite": background = "white"; color = "gold"; break;
-                case "Curse": background = "black"; color = "purple"; break;
-                default: background = "gray"; color = "black"; break;
-            }
-            diceDiv.style.backgroundColor = background;
+            const colorMap = {
+                Standard: ["purple", "black"],
+                Bleed: ["red", "black"],
+                Poison: ["green", "black"],
+                Burn: ["orange", "black"],
+                Smite: ["white", "gold"],
+                Curse: ["black", "purple"]
+            };
+            const [bg, color] = colorMap[newDie.type] || ["gray", "black"];
+            diceDiv.style.backgroundColor = bg;
             diceDiv.style.color = color;
 
             dicePool.appendChild(diceDiv);
             bindDragEvents();
+            enableTouchDrag(diceDiv);
             updateZoneTotals();
         }
     }
@@ -347,29 +341,22 @@
         }
     }
 
-    function allowDrop(e) {
-        e.preventDefault();
-        e.currentTarget.classList.add('dragover');
-    }
-
-    function dragHandler(e) {
-        e.dataTransfer.setData("text/plain", e.target.id);
-        e.target.style.opacity = "0.5";
-    }
-
+    function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+    function dragHandler(e) { e.dataTransfer.setData("text/plain", e.target.id); e.target.style.opacity = "0.5"; }
+    function dragEnd(e) { e.target.style.opacity = "1"; }
     function dropHandler(e) {
         e.preventDefault();
         e.currentTarget.classList.remove('dragover');
         const diceId = e.dataTransfer.getData("text/plain");
+        moveDiceToZone(diceId, e.currentTarget.id);
+    }
+
+    function moveDiceToZone(diceId, zoneId) {
         const dice = document.getElementById(diceId);
         if (!dice) return;
-        const zoneId = e.currentTarget.id;
-        const diceCount = e.currentTarget.querySelectorAll(".dice").length;
-        if ((zoneId === "weapon" || zoneId === "ability1" || zoneId === "ability2") && diceCount >= 9) {
-            dice.style.opacity = "1";
-            return;
-        }
-        e.currentTarget.appendChild(dice);
+        const diceCount = document.getElementById(zoneId).querySelectorAll(".dice").length;
+        if ((zoneId === "weapon" || zoneId === "ability1" || zoneId === "ability2") && diceCount >= 9) return;
+        document.getElementById(zoneId).appendChild(dice);
         dice.style.opacity = "1";
         const diceIndex = parseInt(diceId.replace('dice-', ''));
         fetch('/Dice/Move', {
@@ -380,12 +367,54 @@
         updateZoneTotals();
     }
 
-    function dragEnd(e) { e.target.style.opacity = "1"; }
+    // ✅ Improved Touch drag (accurate and snap-back if invalid)
+    function enableTouchDrag(elem) {
+        let offsetX = 0, offsetY = 0;
+        let originalParent = null;
+
+        elem.addEventListener('touchstart', e => {
+            const t = e.touches[0];
+            const rect = elem.getBoundingClientRect();
+            offsetX = t.clientX - rect.left;
+            offsetY = t.clientY - rect.top;
+            originalParent = elem.parentElement;
+            elem.style.opacity = "0.6";
+        });
+
+        elem.addEventListener('touchmove', e => {
+            const t = e.touches[0];
+            e.preventDefault(); // Prevent screen scroll while dragging
+            elem.style.position = 'fixed';
+            elem.style.left = (t.clientX - offsetX) + 'px';
+            elem.style.top = (t.clientY - offsetY) + 'px';
+            elem.style.zIndex = 1000;
+        });
+
+        elem.addEventListener('touchend', e => {
+            elem.style.opacity = "1";
+            elem.style.position = '';
+            elem.style.left = '';
+            elem.style.top = '';
+            elem.style.zIndex = '';
+
+            const t = e.changedTouches[0];
+            const target = document.elementFromPoint(t.clientX, t.clientY);
+            const dropZone = target ? target.closest('.drop-area') : null;
+
+            if (dropZone) {
+                moveDiceToZone(elem.id, dropZone.id);
+            } else if (originalParent) {
+                // Snap back to original container if dropped outside
+                originalParent.appendChild(elem);
+            }
+        });
+    }
 
     function bindDragEvents() {
         document.querySelectorAll('.dice').forEach(dice => {
             dice.addEventListener('dragstart', dragHandler);
             dice.addEventListener('dragend', dragEnd);
+            enableTouchDrag(dice);
         });
     }
 
