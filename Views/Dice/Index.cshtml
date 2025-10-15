@@ -3,6 +3,8 @@
     ViewData["Title"] = "Dice Roller";
 }
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
 <style>
     button {
         font-weight: bold;
@@ -95,6 +97,9 @@
         align-items: center;
         text-align: center;
         box-sizing: border-box;
+        touch-action: none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
     }
 
         .dice:active {
@@ -111,6 +116,34 @@
         font-size: 1.8em;
         text-align: center;
         display: inline-block;
+    }
+
+    @@media (max-width: 768px) {
+        body {
+            zoom: 0.8;
+        }
+
+        .add-dice-btn, .control-btn {
+            padding: 12px 20px;
+            font-size: 1em;
+        }
+
+        .dice {
+            width: 70px;
+            height: 70px;
+            font-size: 1.4em;
+        }
+
+        .drop-area {
+            min-height: 100px;
+            border-width: 3px;
+            gap: 6px;
+        }
+
+        .drop-total {
+            font-size: 1.3em;
+            right: 10px;
+        }
     }
 </style>
 
@@ -147,7 +180,8 @@
                 _ => "black"
             };
 
-            <button type="button" class="add-dice-btn"
+            <button type="button"
+                    class="add-dice-btn"
                     style="background-color:@bg;color:@textColor;"
                     onclick="addDice('@type')">
                 Add @type
@@ -252,10 +286,7 @@
     </div>
 </div>
 
-
-
 <script>
-    // Add Dice
     async function addDice(type) {
         const response = await fetch('/Dice/Add', {
             method: 'POST',
@@ -329,34 +360,27 @@
     function dropHandler(e) {
         e.preventDefault();
         e.currentTarget.classList.remove('dragover');
-
         const diceId = e.dataTransfer.getData("text/plain");
         const dice = document.getElementById(diceId);
         if (!dice) return;
-
         const zoneId = e.currentTarget.id;
         const diceCount = e.currentTarget.querySelectorAll(".dice").length;
         if ((zoneId === "weapon" || zoneId === "ability1" || zoneId === "ability2") && diceCount >= 9) {
             dice.style.opacity = "1";
             return;
         }
-
         e.currentTarget.appendChild(dice);
         dice.style.opacity = "1";
-
         const diceIndex = parseInt(diceId.replace('dice-', ''));
         fetch('/Dice/Move', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: `index=${diceIndex}&zone=${zoneId}`
         });
-
         updateZoneTotals();
     }
 
-    function dragEnd(e) {
-        e.target.style.opacity = "1";
-    }
+    function dragEnd(e) { e.target.style.opacity = "1"; }
 
     function bindDragEvents() {
         document.querySelectorAll('.dice').forEach(dice => {
@@ -372,11 +396,9 @@
         });
     }
 
-    // Total Calculation
     function updateZoneTotals() {
         const zones = ["pool", "weapon", "ability1", "ability2"];
         let overall = 0;
-
         zones.forEach(zone => {
             const zoneElem = document.getElementById(zone);
             const dice = zoneElem ? zoneElem.querySelectorAll('.dice') : [];
@@ -389,7 +411,6 @@
             if (totalElem) totalElem.textContent = total;
             overall += total;
         });
-
         document.getElementById('overall-total').textContent = overall;
     }
 
