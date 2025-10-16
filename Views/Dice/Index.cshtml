@@ -167,11 +167,12 @@
 <!-- Roll / Reset -->
 <div style="margin-bottom:15px;">
     <button type="button" class="control-btn" onclick="rollDice()">Roll All</button>
-    <form asp-action="Reset" method="post" style="display:inline;">
-        <button type="submit" class="control-btn" style="background-color:#ffcccc;color:black;">
-            Reset
-        </button>
-    </form>
+    <button type="button"
+            class="control-btn"
+            style="background-color:#ffcccc;color:black;"
+            onclick="resetDice()">
+        Reset
+    </button>
 </div>
 
 <!-- Dice Buttons -->
@@ -345,18 +346,19 @@
         updateZoneTotals();
     }
 
-    async function removeDice(index) {
-        const response = await fetch('/Dice/Remove', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `index=${index}`
-        });
+            async function resetDice() {
+        const response = await fetch('/Dice/Reset', { method: 'POST' });
         if (response.ok) {
-            const diceElem = document.getElementById(`dice-${index}`);
-            if (diceElem) diceElem.remove();
-            updateZoneTotals();
+            document.querySelectorAll('.dice').forEach(d => {
+                d.style.transition = "opacity 0.3s";
+                d.style.opacity = "0";
+                setTimeout(() => d.remove(), 300);
+            });
+            document.querySelectorAll('.drop-total').forEach(t => t.textContent = "0");
+            document.getElementById('overall-total').textContent = "0";
         }
     }
+
 
     function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
     function dragHandler(e) { e.dataTransfer.setData("text/plain", e.target.id); e.target.style.opacity = "0.5"; }

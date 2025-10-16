@@ -67,10 +67,10 @@ namespace DiceWebApp.Controllers
             diceManager.DiceList.Clear();
             SaveDiceManager(diceManager);
 
-            return RedirectToAction("Index");
+            return Json(new { success = true });
         }
 
-          [HttpPost]
+        [HttpPost]
         public IActionResult RollJson()
         {
             var diceManager = GetDiceManager();
