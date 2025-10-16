@@ -8,8 +8,7 @@
 
         public Dice Add(DiceType type)
         {
-            var die = new Dice { Type = type, Location = "pool" };
-            die.Roll();
+            var die = new Dice { Type = type, Location = "pool", Value = null };
             DiceList.Add(die);
             return die;
         }

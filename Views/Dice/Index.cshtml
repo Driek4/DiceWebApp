@@ -285,7 +285,7 @@
                          draggable="true"
                          onclick="removeDice(@i)"
                          style="background-color:@background;color:@color;">
-                        @dice.Value
+                        @(dice.Value.HasValue? dice.Value.ToString() : "")
                     </div>
                 }
             }
@@ -315,7 +315,7 @@
             diceDiv.className = 'dice';
             diceDiv.draggable = true;
             diceDiv.onclick = () => removeDice(newDie.index);
-            diceDiv.innerText = newDie.value;
+            diceDiv.innerText = newDie.value !== null ? newDie.value : '';
 
             const colorMap = {
                 Standard: ["purple", "black"],
