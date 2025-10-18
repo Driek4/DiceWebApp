@@ -27,7 +27,7 @@
         {
             return type switch
             {
-                DiceType.Bleed => new[] { 0, 1, 1, 2, 2, 3 },
+                DiceType.Bleed => new[] { 1, 1, 2, 2, 2, 3 },
                 DiceType.Poison => new[] { 0, 0, 1, 3, 4, 4 },
                 DiceType.Burn => new[] { 0, 1, 2, 2, 4, 6 },
                 DiceType.Smite => new[] { 0, 1, 2, 6, 6, 6 },
